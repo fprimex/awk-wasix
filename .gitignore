@@ -7,3 +7,4 @@ testdir/foo*
 testdir/temp*
 *.pdf
 *.mail
+*~

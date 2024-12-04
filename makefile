@@ -22,18 +22,19 @@
 # THIS SOFTWARE.
 # ****************************************************************/
 
-CFLAGS = -fsanitize=address -O1 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls
-CFLAGS = -g
-CFLAGS =
-CFLAGS = -O2
+#CFLAGS = -fsanitize=address -O1 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls
+#CFLAGS = -g
+#CFLAGS =
+#CFLAGS = -O2
+#CFLAGS += $(CFLAGS)
 
 # compiler options
 #CC = cc -Wall -g -Wwrite-strings
 #CC = cc -O4 -Wall -pedantic -fno-strict-aliasing
 #CC = cc -fprofile-arcs -ftest-coverage # then gcov f1.c; cat f1.c.gcov
-HOSTCC = cc -g -Wall -pedantic -Wcast-qual
+#HOSTCC = cc -g -Wall -pedantic -Wcast-qual
 # HOSTCC = g++ -g -Wall -pedantic -Wcast-qual
-CC = $(HOSTCC)  # change this is cross-compiling.
+#CC = $(HOSTCC)  # change this is cross-compiling.
 
 # By fiat, to make our lives easier, yacc is now defined to be bison.
 # If you want something else, you're on your own.
@@ -52,7 +53,7 @@ SHIP = README LICENSE FIXES $(SOURCE) awkgram.tab.[ch].bak makefile  \
 	 awk.1
 
 a.out:	awkgram.tab.o $(OFILES)
-	$(CC) $(CFLAGS) awkgram.tab.o $(OFILES) $(ALLOC)  -lm
+	$(CC) $(CFLAGS) $(LDFLAGS) awkgram.tab.o $(OFILES) $(ALLOC)  -lm
 
 $(OFILES):	awk.h awkgram.tab.h proto.h
 
@@ -60,10 +61,10 @@ awkgram.tab.c awkgram.tab.h:	awk.h proto.h awkgram.y
 	$(YACC) $(YFLAGS) awkgram.y
 
 proctab.c:	maketab
-	./maketab awkgram.tab.h >proctab.c
+	wasmer run --mapdir /data:. maketab /data/awkgram.tab.h >proctab.c
 
 maketab:	awkgram.tab.h maketab.c
-	$(HOSTCC) $(CFLAGS) maketab.c -o maketab
+	$(CC) $(CFLAGS) maketab.c -o maketab
 
 bundle:
 	@cp awkgram.tab.h awkgram.tab.h.bak
