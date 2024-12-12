@@ -86,6 +86,8 @@ if [ -z "$1" ]; then
     mv a.out awk.wasm
   fi
 
+  wasm-opt --asyncify awk.wasm -o awk.wasm
+
   exit
 fi
 
@@ -104,8 +106,6 @@ fi
 #else
 #    $CC $CFLAGS $LDFLAGS -o $(basename $(pwd)).wasm $@
 #fi
-
-#wasm-opt -O4 --asyncify -g main.wasm -o main.wasm
 
 #export WASMER=$(realpath "../../target/release/wasmer")
 #
